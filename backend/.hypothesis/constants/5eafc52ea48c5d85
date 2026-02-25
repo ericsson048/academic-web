@@ -1,0 +1,4 @@
+# file: C:\Users\eeric\Desktop\aca\academic-web\backend\grades\models.py
+# hypothesis_version: 6.150.2
+
+['-modified_at', 'Grade histories', 'New grade value', 'Previous grade value', 'academic_grade', 'entered_by', 'grade', 'grade_modifications', 'grades', 'grades_entered', 'history', 'modified_at', 'semester', 'student', 'students.Semester', 'students.Student', 'students.Subject', 'subject']

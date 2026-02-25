@@ -1,0 +1,4 @@
+# file: C:\Users\eeric\Desktop\aca\academic-web\backend\authentication\migrations\0001_initial.py
+# hypothesis_version: 6.150.2
+
+[128, 150, 254, 'Administrator', 'ID', 'Teacher', 'User', 'active', 'admin', 'auth', 'auth.group', 'auth.permission', 'auth_user', 'created_at', 'date joined', 'date_joined', 'db_table', 'email', 'email address', 'first name', 'first_name', 'groups', 'id', 'indexes', 'is_active', 'is_staff', 'is_superuser', 'last login', 'last name', 'last_login', 'last_name', 'objects', 'password', 'role', 'staff status', 'superuser status', 'teacher', 'unique', 'user', 'user permissions', 'user_permissions', 'user_set', 'username']

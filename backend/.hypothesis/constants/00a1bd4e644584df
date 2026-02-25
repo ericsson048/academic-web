@@ -1,0 +1,4 @@
+# file: C:\Users\eeric\Desktop\aca\academic-web\backend\analytics\migrations\0001_initial.py
+# hypothesis_version: 6.150.2
+
+['0001_initial', 'ID', 'PerformanceIndicator', 'average', 'calculated_at', 'class_rank', 'db_table', 'id', 'indexes', 'semester', 'standard_deviation', 'student', 'students', 'students.semester', 'students.student', 'students.subject', 'subject', 'unique_together']

@@ -1,0 +1,4 @@
+# file: C:\Users\eeric\Desktop\aca\academic-web\backend\grades\urls.py
+# hypothesis_version: 6.150.2
+
+['<int:pk>/', '<int:pk>/history/', 'bulk-create/', 'bulk_create', 'create', 'delete', 'destroy', 'get', 'grade-bulk-create', 'grade-detail', 'grade-history', 'grade-list', 'grades', 'history', 'list', 'partial_update', 'patch', 'post', 'put', 'retrieve', 'update']

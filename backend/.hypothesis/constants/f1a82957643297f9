@@ -1,0 +1,4 @@
+# file: C:\Users\eeric\Desktop\aca\academic-web\backend\grades\migrations\0001_initial.py
+# hypothesis_version: 6.150.2
+
+['-modified_at', '0001_initial', 'Grade', 'Grade histories', 'GradeHistory', 'ID', 'New grade value', 'Previous grade value', 'academic_grade', 'db_table', 'entered_at', 'entered_by', 'grade', 'grade_modifications', 'gradehistory', 'grades', 'grades.grade', 'grades_entered', 'history', 'id', 'modified_at', 'modified_by', 'new_value', 'old_value', 'ordering', 'reason', 'semester', 'student', 'students', 'students.semester', 'students.student', 'students.subject', 'subject', 'updated_at', 'value', 'value__gte', 'value__lte', 'verbose_name_plural']

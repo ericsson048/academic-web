@@ -1,0 +1,4 @@
+# file: C:\Users\eeric\Desktop\aca\academic-web\backend\students\models.py
+# hypothesis_version: 6.150.2
+
+[0.01, 1.0, 9.99, 100, 'Classes', 'Semester end date', 'Semester start date', 'Student first name', 'Student last name', 'Student photo', 'Subject description', 'academic_class', 'academic_semester', 'academic_student', 'academic_subject', 'academic_year', 'check_semester_dates', 'class_assigned', 'code', 'first_name', 'is_active', 'is_current', 'last_name', 'name', 'start_date', 'student_id', 'students', 'students/']

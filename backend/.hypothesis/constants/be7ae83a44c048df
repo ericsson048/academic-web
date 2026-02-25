@@ -1,0 +1,4 @@
+# file: C:\Users\eeric\Desktop\aca\academic-web\backend\students\urls.py
+# hypothesis_version: 6.150.2
+
+['<int:pk>/', 'class-detail', 'class-list', 'classes/', 'classes/<int:pk>/', 'create', 'delete', 'destroy', 'get', 'list', 'partial_update', 'patch', 'post', 'put', 'retrieve', 'semester-detail', 'semester-list', 'semesters/', 'semesters/<int:pk>/', 'student-detail', 'student-list', 'students', 'subject-detail', 'subject-list', 'subjects/', 'subjects/<int:pk>/', 'update']

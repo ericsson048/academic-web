@@ -1,0 +1,4 @@
+# file: C:\Users\eeric\Desktop\aca\academic-web\backend\authentication\serializers.py
+# hypothesis_version: 6.150.2
+
+['created_at', 'email', 'first_name', 'id', 'last_name', 'password', 'password_confirm', 'role', 'teacher', 'user', 'username']

@@ -1,0 +1,4 @@
+# file: C:\Users\eeric\Desktop\aca\academic-web\backend\students\serializers.py
+# hypothesis_version: 6.150.2
+
+['academic_year', 'class_assigned', 'class_id', 'code', 'coefficient', 'created_at', 'description', 'end_date', 'enrollment_date', 'first_name', 'id', 'is_active', 'is_current', 'last_name', 'level', 'name', 'photo', 'start_date', 'student_id', 'updated_at']

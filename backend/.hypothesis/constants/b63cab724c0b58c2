@@ -1,0 +1,4 @@
+# file: C:\Users\eeric\Desktop\aca\academic-web\backend\grades\views.py
+# hypothesis_version: 6.150.2
+
+['-updated_at', 'entered_at', 'entered_by', 'error', 'errors', 'modified_by', 'non_field_errors', 'semester', 'semester_id', 'student', 'student_id', 'subject', 'subject_id', 'updated_at', 'value']

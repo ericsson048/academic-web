@@ -1,0 +1,4 @@
+# file: C:\Users\eeric\Desktop\aca\academic-web\backend\apas\urls.py
+# hypothesis_version: 6.150.2
+
+['admin/', 'analytics.urls', 'api/analytics/', 'api/auth/', 'api/grades/', 'api/students/', 'authentication.urls', 'grades.urls', 'students.urls']

@@ -1,0 +1,21 @@
+{
+  "enabled": true,
+  "name": "Auto Documentation Update",
+  "description": "Monitors TypeScript source files and automatically updates README.md when code changes are detected",
+  "version": "1",
+  "when": {
+    "type": "fileEdited",
+    "patterns": [
+      "*.ts",
+      "*.tsx",
+      "server.ts",
+      "package.json",
+      "vite.config.ts",
+      "tsconfig.json"
+    ]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "A source file has been modified. Please review the changes and update the README.md to reflect any new features, API changes, configuration updates, or architectural modifications. Ensure the documentation remains accurate and helpful for developers."
+  }
+}

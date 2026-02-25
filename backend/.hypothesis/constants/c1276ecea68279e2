@@ -1,0 +1,4 @@
+# file: C:\Users\eeric\Desktop\aca\academic-web\backend\grades\serializers.py
+# hypothesis_version: 6.150.2
+
+['0', '20', 'academic_year', 'class_assigned_id', 'class_id', 'code', 'coefficient', 'end_date', 'entered_at', 'entered_by', 'first_name', 'grade', 'id', 'is_active', 'is_current', 'last_name', 'modified_at', 'modified_by', 'name', 'new_value', 'old_value', 'reason', 'role', 'semester', 'semester_id', 'start_date', 'student', 'student_id', 'subject', 'subject_id', 'updated_at', 'username', 'value']

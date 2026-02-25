@@ -1,0 +1,4 @@
+# file: C:\Users\eeric\Desktop\aca\academic-web\backend\authentication\urls.py
+# hypothesis_version: 6.150.2
+
+['authentication', 'current_user', 'login', 'login/', 'logout', 'logout/', 'me/', 'refresh/', 'token_refresh']
