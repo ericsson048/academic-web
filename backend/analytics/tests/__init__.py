@@ -1,1 +1,1 @@
-# Analytics tests
+"""Tests for analytics app."""

@@ -1,0 +1,4 @@
+# file: C:\Users\eeric\Desktop\aca\academic-web\backend\analytics\migrations\0002_alter_performanceindicator_average_and_more.py
+# hypothesis_version: 6.150.2
+
+['0001_initial', 'analytics', 'average', 'calculated_at', 'performanceindicator', 'semester', 'standard_deviation', 'student', 'students', 'students.semester', 'students.student', 'students.subject', 'subject']

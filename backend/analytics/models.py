@@ -1,25 +1,26 @@
 """
-Analytics-related models for APAS.
+Performance indicator models for APAS.
 """
 from django.db import models
+from django.core.validators import MinValueValidator, MaxValueValidator
 
 
 class PerformanceIndicator(models.Model):
     """
     Stores calculated performance metrics for students.
-    Can represent overall performance or subject-specific performance.
+    These are automatically calculated when grades are entered or updated.
     """
     student = models.ForeignKey(
         'students.Student',
         on_delete=models.CASCADE,
         related_name='performance_indicators',
-        help_text='Student for whom metrics are calculated'
+        help_text='Student for whom this indicator is calculated'
     )
     semester = models.ForeignKey(
         'students.Semester',
         on_delete=models.CASCADE,
         related_name='performance_indicators',
-        help_text='Semester for which metrics are calculated'
+        help_text='Semester for which this indicator applies'
     )
     subject = models.ForeignKey(
         'students.Subject',
@@ -27,21 +28,22 @@ class PerformanceIndicator(models.Model):
         related_name='performance_indicators',
         null=True,
         blank=True,
-        help_text='Subject for which metrics are calculated (null for overall performance)'
+        help_text='Subject (null for overall indicators)'
     )
     
     # Calculated metrics
     average = models.DecimalField(
         max_digits=5,
         decimal_places=2,
-        help_text='Average grade (subject-specific or overall weighted average)'
+        validators=[MinValueValidator(0), MaxValueValidator(20)],
+        help_text='Average grade (subject-specific or overall)'
     )
     standard_deviation = models.DecimalField(
         max_digits=5,
         decimal_places=2,
         null=True,
         blank=True,
-        help_text='Standard deviation of grades (for class-level analysis)'
+        help_text='Standard deviation (for class-level statistics)'
     )
     progression_percentage = models.DecimalField(
         max_digits=6,
@@ -58,7 +60,7 @@ class PerformanceIndicator(models.Model):
     
     calculated_at = models.DateTimeField(
         auto_now=True,
-        help_text='Timestamp when metrics were last calculated'
+        help_text='Timestamp of last calculation'
     )
     
     class Meta:

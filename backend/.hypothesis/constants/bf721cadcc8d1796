@@ -1,0 +1,4 @@
+# file: C:\Users\eeric\Desktop\aca\academic-web\backend\authentication\migrations\0002_alter_user_managers_alter_user_email.py
+# hypothesis_version: 6.150.2
+
+[254, '0001_initial', 'authentication', 'email', 'objects', 'user']

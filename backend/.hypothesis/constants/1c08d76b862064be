@@ -1,0 +1,4 @@
+# file: C:\Users\eeric\Desktop\aca\academic-web\backend\analytics\admin.py
+# hypothesis_version: 6.150.2
+
+['-calculated_at', 'average', 'calculated_at', 'class_rank', 'semester', 'standard_deviation', 'student', 'student__first_name', 'student__last_name', 'student__student_id', 'subject']

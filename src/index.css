@@ -1,21 +1,162 @@
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Fira+Sans:wght@300;400;500;600;700&display=swap');
 @import "tailwindcss";
 
-/* Base styles */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+/* CSS Variables from Design System */
+:root {
+  /* Colors */
+  --color-primary: #1E40AF;
+  --color-secondary: #3B82F6;
+  --color-cta: #F59E0B;
+  --color-background: #F8FAFC;
+  --color-text: #1E3A8A;
+  
+  /* Spacing */
+  --space-xs: 0.25rem;
+  --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2rem;
+  --space-2xl: 3rem;
+  --space-3xl: 4rem;
+  
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
+  --shadow-lg: 0 10px 15px rgba(0,0,0,0.1);
+  --shadow-xl: 0 20px 25px rgba(0,0,0,0.15);
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  font-family: 'Fira Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Droid Sans', 'Helvetica Neue', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: var(--color-background);
+  color: var(--color-text);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Fira Code', monospace;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+  font-family: 'Fira Code', source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+}
+
+/* Keep global CSS minimal to avoid fighting Tailwind utilities */
+
+/* Respect reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+@keyframes loginFloat {
+  0%, 100% {
+    transform: translateY(0px) scale(1);
+  }
+  50% {
+    transform: translateY(-10px) scale(1.03);
+  }
+}
+
+@keyframes loginReveal {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.login-card-enter {
+  animation: loginReveal 540ms cubic-bezier(0.21, 1, 0.29, 1) both;
+}
+
+.login-aside-enter {
+  animation: loginReveal 680ms cubic-bezier(0.21, 1, 0.29, 1) both;
+}
+
+.login-orb {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(12px);
+  pointer-events: none;
+  animation: loginFloat 11s ease-in-out infinite;
+}
+
+.login-orb--one {
+  height: 240px;
+  width: 240px;
+  top: -80px;
+  left: -70px;
+  background: radial-gradient(circle at 30% 30%, rgba(59, 130, 246, 0.28), rgba(59, 130, 246, 0));
+}
+
+.login-orb--two {
+  height: 200px;
+  width: 200px;
+  right: -50px;
+  bottom: -60px;
+  background: radial-gradient(circle at 60% 40%, rgba(245, 158, 11, 0.2), rgba(245, 158, 11, 0));
+  animation-delay: 0.9s;
+}
+
+.login-orb--three {
+  height: 160px;
+  width: 160px;
+  right: 20%;
+  top: 15%;
+  background: radial-gradient(circle at 60% 40%, rgba(30, 64, 175, 0.14), rgba(30, 64, 175, 0));
+  animation-delay: 1.7s;
+}
+
+.login-field {
+  appearance: none;
+  -webkit-appearance: none;
+  background-clip: padding-box;
+  caret-color: #1e40af;
+}
+
+.login-field:focus,
+.login-field:focus-visible {
+  outline: none !important;
+}
+
+/* Hide built-in credential/reveal icons that can break input layout */
+.login-field::-ms-reveal,
+.login-field::-ms-clear {
+  display: none;
+}
+
+.login-field::-webkit-credentials-auto-fill-button,
+.login-field::-webkit-contacts-auto-fill-button {
+  visibility: hidden;
+  display: none !important;
+  pointer-events: none;
+  position: absolute;
+  right: 0;
+}
+
+.login-field:-webkit-autofill,
+.login-field:-webkit-autofill:hover,
+.login-field:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0 1000px #ffffff inset;
+  box-shadow: 0 0 0 1000px #ffffff inset;
+  -webkit-text-fill-color: #0f172a;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .login-card-enter,
+  .login-aside-enter,
+  .login-orb {
+    animation: none !important;
+  }
 }

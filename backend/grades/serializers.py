@@ -1,7 +1,7 @@
 """
-Serializers for grade management endpoints.
+Serializers for grade management endpoints with comprehensive validation.
 """
-from decimal import Decimal
+from decimal import Decimal, InvalidOperation
 
 from rest_framework import serializers
 
@@ -55,7 +55,7 @@ class GradeUserNestedSerializer(serializers.ModelSerializer):
 
 class GradeSerializer(serializers.ModelSerializer):
     """
-    Serializer for grade CRUD operations.
+    Serializer for grade CRUD operations with comprehensive validation.
     """
 
     student = GradeStudentNestedSerializer(read_only=True)
@@ -67,18 +67,41 @@ class GradeSerializer(serializers.ModelSerializer):
         source='student',
         queryset=Student.objects.all(),
         write_only=True,
+        error_messages={
+            'required': 'Student is required.',
+            'does_not_exist': 'The specified student does not exist.',
+            'incorrect_type': 'Invalid student ID format.'
+        }
     )
     subject_id = serializers.PrimaryKeyRelatedField(
         source='subject',
         queryset=Subject.objects.all(),
         write_only=True,
+        error_messages={
+            'required': 'Subject is required.',
+            'does_not_exist': 'The specified subject does not exist.',
+            'incorrect_type': 'Invalid subject ID format.'
+        }
     )
     semester_id = serializers.PrimaryKeyRelatedField(
         source='semester',
         queryset=Semester.objects.all(),
         write_only=True,
+        error_messages={
+            'required': 'Semester is required.',
+            'does_not_exist': 'The specified semester does not exist.',
+            'incorrect_type': 'Invalid semester ID format.'
+        }
     )
-    reason = serializers.CharField(write_only=True, required=False, allow_blank=True)
+    reason = serializers.CharField(
+        write_only=True,
+        required=False,
+        allow_blank=True,
+        max_length=500,
+        error_messages={
+            'max_length': 'Reason cannot exceed 500 characters.'
+        }
+    )
 
     class Meta:
         model = Grade
@@ -97,24 +120,56 @@ class GradeSerializer(serializers.ModelSerializer):
             'updated_at',
         ]
         read_only_fields = ['id', 'student', 'subject', 'semester', 'entered_by', 'entered_at', 'updated_at']
+        extra_kwargs = {
+            'value': {
+                'required': True,
+                'error_messages': {
+                    'required': 'Grade value is required.',
+                    'invalid': 'Invalid grade value format.'
+                }
+            }
+        }
 
     def validate_value(self, value):
         """
-        Ensure grade value is in the inclusive 0-20 range.
+        Ensure grade value is in the inclusive 0-20 range with descriptive errors.
         """
-        if value < Decimal('0') or value > Decimal('20'):
-            raise serializers.ValidationError('Grade value must be between 0 and 20.')
-        return value
+        if value is None:
+            raise serializers.ValidationError('Grade value is required.')
+        
+        try:
+            decimal_value = Decimal(str(value))
+        except (InvalidOperation, ValueError):
+            raise serializers.ValidationError('Grade value must be a valid number.')
+        
+        if decimal_value < Decimal('0'):
+            raise serializers.ValidationError('Grade value cannot be negative. Minimum value is 0.')
+        
+        if decimal_value > Decimal('20'):
+            raise serializers.ValidationError('Grade value cannot exceed 20. Maximum value is 20.')
+        
+        # Limit to 2 decimal places
+        if decimal_value.as_tuple().exponent < -2:
+            raise serializers.ValidationError('Grade value can have at most 2 decimal places.')
+        
+        return decimal_value
 
     def validate(self, attrs):
         """
-        Ensure uniqueness of (student, subject, semester).
+        Ensure uniqueness of (student, subject, semester) with descriptive error.
         """
         student = attrs.get('student', getattr(self.instance, 'student', None))
         subject = attrs.get('subject', getattr(self.instance, 'subject', None))
         semester = attrs.get('semester', getattr(self.instance, 'semester', None))
 
         if student and subject and semester:
+            # Check if student is active
+            if not student.is_active:
+                raise serializers.ValidationError({
+                    'student_id': f'Cannot enter grades for inactive student {student.student_id}.'
+                })
+            
+            # Check for duplicate grade
             queryset = Grade.objects.filter(
                 student=student,
                 subject=subject,
@@ -124,9 +179,12 @@ class GradeSerializer(serializers.ModelSerializer):
                 queryset = queryset.exclude(pk=self.instance.pk)
 
             if queryset.exists():
-                raise serializers.ValidationError(
-                    'A grade already exists for this student, subject, and semester.'
-                )
+                raise serializers.ValidationError({
+                    'non_field_errors': [
+                        f'A grade already exists for student {student.student_id} '
+                        f'in {subject.name} for {semester.name}.'
+                    ]
+                })
 
         return attrs
 
@@ -168,32 +226,82 @@ class GradeHistorySerializer(serializers.ModelSerializer):
 
 class BulkGradeItemSerializer(serializers.Serializer):
     """
-    Serializer for one item in bulk grade creation.
+    Serializer for one item in bulk grade creation with validation.
     """
 
-    student_id = serializers.PrimaryKeyRelatedField(source='student', queryset=Student.objects.all())
-    subject_id = serializers.PrimaryKeyRelatedField(source='subject', queryset=Subject.objects.all())
-    semester_id = serializers.PrimaryKeyRelatedField(source='semester', queryset=Semester.objects.all())
-    value = serializers.DecimalField(max_digits=5, decimal_places=2)
+    student_id = serializers.PrimaryKeyRelatedField(
+        source='student',
+        queryset=Student.objects.all(),
+        error_messages={
+            'required': 'Student ID is required for each grade.',
+            'does_not_exist': 'Student does not exist.',
+            'incorrect_type': 'Invalid student ID format.'
+        }
+    )
+    subject_id = serializers.PrimaryKeyRelatedField(
+        source='subject',
+        queryset=Subject.objects.all(),
+        error_messages={
+            'required': 'Subject ID is required for each grade.',
+            'does_not_exist': 'Subject does not exist.',
+            'incorrect_type': 'Invalid subject ID format.'
+        }
+    )
+    semester_id = serializers.PrimaryKeyRelatedField(
+        source='semester',
+        queryset=Semester.objects.all(),
+        error_messages={
+            'required': 'Semester ID is required for each grade.',
+            'does_not_exist': 'Semester does not exist.',
+            'incorrect_type': 'Invalid semester ID format.'
+        }
+    )
+    value = serializers.DecimalField(
+        max_digits=5,
+        decimal_places=2,
+        error_messages={
+            'required': 'Grade value is required.',
+            'invalid': 'Invalid grade value format.',
+            'max_digits': 'Grade value is too large.',
+            'max_decimal_places': 'Grade value can have at most 2 decimal places.'
+        }
+    )
 
     def validate_value(self, value):
         """
         Ensure grade value is in the inclusive 0-20 range.
         """
-        if value < Decimal('0') or value > Decimal('20'):
-            raise serializers.ValidationError('Grade value must be between 0 and 20.')
+        if value < Decimal('0'):
+            raise serializers.ValidationError('Grade value cannot be negative. Minimum value is 0.')
+        
+        if value > Decimal('20'):
+            raise serializers.ValidationError('Grade value cannot exceed 20. Maximum value is 20.')
+        
         return value
 
     def validate(self, attrs):
         """
         Ensure no duplicate with existing grade in the database.
         """
+        student = attrs['student']
+        subject = attrs['subject']
+        semester = attrs['semester']
+        
+        # Check if student is active
+        if not student.is_active:
+            raise serializers.ValidationError(
+                f'Cannot enter grades for inactive student {student.student_id}.'
+            )
+        
+        # Check for existing grade
         if Grade.objects.filter(
-            student=attrs['student'],
-            subject=attrs['subject'],
-            semester=attrs['semester'],
+            student=student,
+            subject=subject,
+            semester=semester,
         ).exists():
             raise serializers.ValidationError(
-                'A grade already exists for this student, subject, and semester.'
+                f'A grade already exists for student {student.student_id} '
+                f'in {subject.name} for {semester.name}.'
             )
+        
         return attrs

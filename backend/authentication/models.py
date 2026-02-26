@@ -37,6 +37,8 @@ class User(AbstractUser):
         help_text='User role for access control'
     )
     
+    email = models.EmailField(blank=True, null=True)
+    
     created_at = models.DateTimeField(auto_now_add=True)
     objects = APASUserManager()
 

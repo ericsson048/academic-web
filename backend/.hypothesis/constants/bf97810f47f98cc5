@@ -1,0 +1,4 @@
+# file: C:\Users\eeric\Desktop\aca\academic-web\backend\analytics\serializers.py
+# hypothesis_version: 6.150.2
+
+['average', 'calculated_at', 'class_rank', 'id', 'semester', 'semester.name', 'semester_name', 'standard_deviation', 'student', 'student.student_id', 'student_id', 'student_name', 'subject', 'subject.code', 'subject.name', 'subject_code', 'subject_name']

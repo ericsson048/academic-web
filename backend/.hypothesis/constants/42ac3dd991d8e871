@@ -1,0 +1,4 @@
+# file: C:\Users\eeric\Desktop\aca\academic-web\backend\analytics\services.py
+# hypothesis_version: 6.150.2
+
+[0.0, 0.5, 100, '-start_date', '0', 'average', 'class_rank', 'mean', 'standard_deviation', 'std_dev', 'student_count', 'subject']

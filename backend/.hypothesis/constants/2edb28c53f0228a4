@@ -1,0 +1,4 @@
+# file: C:\Users\eeric\Desktop\aca\academic-web\backend\analytics\views.py
+# hypothesis_version: 6.150.2
+
+[0.0, '-calculated_at', '0', 'Overall', 'average', 'avg', 'avg_progression', 'calculated_at', 'charts_data', 'class_assigned', 'class_id', 'class_name', 'class_rank', 'count', 'enrollment_date', 'entered_at', 'entered_by', 'error', 'excellent', 'first_name', 'good', 'grades', 'id', 'indicators', 'is_active', 'last_name', 'overall_average', 'poor', 'progression_rate', 'semester', 'semester__start_date', 'semester_id', 'semester_name', 'standard_deviation', 'start_date', 'student', 'student_count', 'student_id', 'subject', 'subject__name', 'subject_code', 'subject_id', 'subject_name', 'total', 'total_students', 'value']

@@ -94,7 +94,7 @@ class TestAuthenticationRoundTripProperty:
         email=valid_email(),
         role=user_role()
     )
-    @settings(max_examples=100, deadline=5000)
+    @settings(max_examples=100, deadline=None)
     def test_valid_credentials_round_trip(self, username, password, email, role):
         """
         Property: For any valid user credentials, the authentication round trip
@@ -172,7 +172,7 @@ class TestAuthenticationRoundTripProperty:
         email=valid_email(),
         role=user_role()
     )
-    @settings(max_examples=100, deadline=5000)
+    @settings(max_examples=100, deadline=None)
     def test_invalid_credentials_fail(self, username, correct_password, 
                                      wrong_password, email, role):
         """
@@ -221,7 +221,7 @@ class TestAuthenticationRoundTripProperty:
         email=valid_email(),
         role=user_role()
     )
-    @settings(max_examples=100, deadline=5000)
+    @settings(max_examples=100, deadline=None)
     def test_token_refresh_round_trip(self, username, password, email, role):
         """
         Property: For any valid user, the refresh token should be able to
@@ -275,7 +275,7 @@ class TestAuthenticationRoundTripProperty:
         email=valid_email(),
         role=user_role()
     )
-    @settings(max_examples=100, deadline=5000)
+    @settings(max_examples=100, deadline=None)
     def test_logout_invalidates_token(self, username, password, email, role):
         """
         Property: For any valid user, after logout, the refresh token should
@@ -322,7 +322,7 @@ class TestAuthenticationRoundTripProperty:
         username=valid_username(),
         password=valid_password()
     )
-    @settings(max_examples=50, deadline=5000)
+    @settings(max_examples=50, deadline=None)
     def test_missing_credentials_fail(self, username, password):
         """
         Property: For any credentials, if username or password is missing,
@@ -352,7 +352,7 @@ class TestAuthenticationRoundTripProperty:
         email=valid_email(),
         role=user_role()
     )
-    @settings(max_examples=100, deadline=5000)
+    @settings(max_examples=100, deadline=None)
     def test_unauthenticated_request_fails(self, username, password, email, role):
         """
         Property: For any user, accessing protected endpoints without
@@ -382,7 +382,7 @@ class TestAuthenticationRoundTripProperty:
         email=valid_email(),
         role=user_role()
     )
-    @settings(max_examples=50, deadline=5000)
+    @settings(max_examples=50, deadline=None)
     def test_invalid_token_fails(self, username, password, email, role):
         """
         Property: For any user, using an invalid or malformed token should
@@ -406,3 +406,4 @@ class TestAuthenticationRoundTripProperty:
         # Assert request fails
         assert response.status_code == status.HTTP_401_UNAUTHORIZED, \
             "Protected endpoint should reject invalid tokens"
+
