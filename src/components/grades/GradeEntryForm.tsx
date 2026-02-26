@@ -16,6 +16,10 @@ interface FormErrors {
   [key: string]: string;
 }
 
+interface PaginatedResponse<T> {
+  results: T[];
+}
+
 export default function GradeEntryForm({
   grade,
   studentId,
@@ -45,11 +49,11 @@ export default function GradeEntryForm({
     const fetchData = async () => {
       try {
         const [subjectsData, semestersData] = await Promise.all([
-          api.get<Subject[]>('/subjects/'),
-          api.get<Semester[]>('/semesters/'),
+          api.get<Subject[] | PaginatedResponse<Subject>>('/students/subjects/?page_size=200'),
+          api.get<Semester[] | PaginatedResponse<Semester>>('/students/semesters/?page_size=200'),
         ]);
-        setSubjects(subjectsData);
-        setSemesters(semestersData);
+        setSubjects(Array.isArray(subjectsData) ? subjectsData : subjectsData.results || []);
+        setSemesters(Array.isArray(semestersData) ? semestersData : semestersData.results || []);
       } catch (err) {
         console.error('Error fetching data:', err);
       }

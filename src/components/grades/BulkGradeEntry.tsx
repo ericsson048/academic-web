@@ -22,6 +22,10 @@ interface FormErrors {
   [key: string]: string;
 }
 
+interface PaginatedResponse<T> {
+  results: T[];
+}
+
 export default function BulkGradeEntryComponent({
   classId,
   subjectId,
@@ -48,18 +52,30 @@ export default function BulkGradeEntryComponent({
     const fetchData = async () => {
       try {
         const [studentsData, subjectsData, semestersData] = await Promise.all([
-          api.get<Student[]>(`/students/?class_assigned=${classId}&is_active=true`),
-          api.get<Subject[]>('/subjects/'),
-          api.get<Semester[]>('/semesters/'),
+          api.get<PaginatedResponse<Student> | Student[]>(
+            `/students/?class_id=${classId}&is_active=true&page_size=200`
+          ),
+          api.get<Subject[] | PaginatedResponse<Subject>>('/students/subjects/?page_size=200'),
+          api.get<Semester[] | PaginatedResponse<Semester>>('/students/semesters/?page_size=200'),
         ]);
-        
-        setStudents(studentsData);
-        setSubjects(subjectsData);
-        setSemesters(semestersData);
+
+        const normalizedStudents = Array.isArray(studentsData)
+          ? studentsData
+          : studentsData.results || [];
+        const normalizedSubjects = Array.isArray(subjectsData)
+          ? subjectsData
+          : subjectsData.results || [];
+        const normalizedSemesters = Array.isArray(semestersData)
+          ? semestersData
+          : semestersData.results || [];
+
+        setStudents(normalizedStudents);
+        setSubjects(normalizedSubjects);
+        setSemesters(normalizedSemesters);
         
         // Initialize grades array
         setGrades(
-          studentsData.map((student) => ({
+          normalizedStudents.map((student) => ({
             student_id: student.id,
             student_name: `${student.first_name} ${student.last_name}`,
             value: '',

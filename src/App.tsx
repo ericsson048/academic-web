@@ -6,6 +6,8 @@ import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import Layout from './components/Layout';
 import Students from './pages/Students';
+import Classes from './pages/Classes';
+import Semesters from './pages/Semesters';
 import Grades from './pages/Grades';
 import Reports from './pages/Reports';
 import NotFound from './pages/NotFound';
@@ -27,6 +29,8 @@ function AppRoutes() {
       >
         <Route index element={<Dashboard />} />
         <Route path="students" element={<Students />} />
+        <Route path="classes" element={<Classes />} />
+        <Route path="semesters" element={<Semesters />} />
         <Route path="grades" element={<Grades />} />
         <Route path="reports" element={<Reports />} />
       </Route>

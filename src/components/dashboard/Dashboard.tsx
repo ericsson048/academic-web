@@ -37,6 +37,30 @@ interface DashboardData {
   }>;
 }
 
+interface SummaryResponse {
+  total_students: number;
+  overall_average: number;
+  progression_rate: number;
+  performance_distribution?: {
+    excellent?: number;
+    good?: number;
+    average?: number;
+    poor?: number;
+  };
+}
+
+interface SubjectPerformanceResponse {
+  subject_name?: string;
+  subject_code: string;
+  average: number;
+  student_count: number;
+}
+
+interface EvolutionResponse {
+  semester_name: string;
+  average: number;
+}
+
 export function Dashboard() {
   const { t, locale } = useI18n();
   const [data, setData] = useState<DashboardData | null>(null);
@@ -67,13 +91,61 @@ export function Dashboard() {
       if (filters.studentId) params.append('student_id', filters.studentId);
       const queryString = params.toString();
 
-      // Fetch all analytics data in parallel
-      const [summary, performanceBySubject, performanceEvolution, performanceDistribution] = await Promise.all([
-        api.get(`/analytics/summary/${queryString ? `?${queryString}` : ''}`),
-        api.get(`/analytics/performance-by-subject/${queryString ? `?${queryString}` : ''}`),
-        api.get(`/analytics/performance-evolution/${queryString ? `?${queryString}` : ''}`),
-        api.get(`/analytics/performance-distribution/${queryString ? `?${queryString}` : ''}`),
+      // Fetch analytics data available in the Django backend
+      const [summaryRaw, performanceBySubjectRaw, performanceEvolutionRaw] = await Promise.all([
+        api.get<SummaryResponse>(`/analytics/summary/${queryString ? `?${queryString}` : ''}`),
+        api.get<SubjectPerformanceResponse[]>(`/analytics/performance-by-subject/${queryString ? `?${queryString}` : ''}`),
+        api.get<EvolutionResponse[]>(`/analytics/performance-evolution/${queryString ? `?${queryString}` : ''}`),
       ]);
+
+      const summary = {
+        totalStudents: summaryRaw.total_students ?? 0,
+        overallAverage: summaryRaw.overall_average ?? 0,
+        progressionRate: summaryRaw.progression_rate ?? 0,
+        atRiskCount: summaryRaw.performance_distribution?.poor ?? 0,
+      };
+
+      const performanceBySubject = (performanceBySubjectRaw || []).map((item) => ({
+        subject: item.subject_name || item.subject_code,
+        subject_code: item.subject_code,
+        average: item.average,
+        student_count: item.student_count,
+      }));
+
+      const performanceEvolution = (performanceEvolutionRaw || []).map((item) => ({
+        semester: item.semester_name,
+        semester_name: item.semester_name,
+        overall_average: item.average,
+      }));
+
+      const distribution = summaryRaw.performance_distribution || {};
+      const totalForDistribution = Object.values(distribution).reduce(
+        (acc, val) => acc + (val || 0),
+        0
+      );
+
+      const performanceDistribution = [
+        {
+          category: 'Excellent (16-20)',
+          count: distribution.excellent || 0,
+          percentage: totalForDistribution ? ((distribution.excellent || 0) / totalForDistribution) * 100 : 0,
+        },
+        {
+          category: 'Good (14-16)',
+          count: distribution.good || 0,
+          percentage: totalForDistribution ? ((distribution.good || 0) / totalForDistribution) * 100 : 0,
+        },
+        {
+          category: 'Average (10-14)',
+          count: distribution.average || 0,
+          percentage: totalForDistribution ? ((distribution.average || 0) / totalForDistribution) * 100 : 0,
+        },
+        {
+          category: 'Poor (<10)',
+          count: distribution.poor || 0,
+          percentage: totalForDistribution ? ((distribution.poor || 0) / totalForDistribution) * 100 : 0,
+        },
+      ];
 
       setData({
         summary,

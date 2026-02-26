@@ -32,6 +32,10 @@ interface Student {
   last_name: string;
 }
 
+interface PaginatedResponse<T> {
+  results: T[];
+}
+
 export function FilterPanel({ filters, onFilterChange }: FilterPanelProps) {
   const { t } = useI18n();
   const [classes, setClasses] = useState<Class[]>([]);
@@ -56,11 +60,11 @@ export function FilterPanel({ filters, onFilterChange }: FilterPanelProps) {
     try {
       setLoading(true);
       const [classesData, semestersData] = await Promise.all([
-        api.get<Class[]>('/classes/'),
-        api.get<Semester[]>('/semesters/'),
+        api.get<Class[] | PaginatedResponse<Class>>('/students/classes/?page_size=200'),
+        api.get<Semester[] | PaginatedResponse<Semester>>('/students/semesters/?page_size=200'),
       ]);
-      setClasses(classesData);
-      setSemesters(semestersData);
+      setClasses(Array.isArray(classesData) ? classesData : classesData.results || []);
+      setSemesters(Array.isArray(semestersData) ? semestersData : semestersData.results || []);
     } catch (error) {
       console.error('Failed to load filter options:', error);
     } finally {

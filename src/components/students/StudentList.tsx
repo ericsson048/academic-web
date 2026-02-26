@@ -10,6 +10,10 @@ interface StudentListProps {
   onAdd?: () => void;
 }
 
+interface PaginatedResponse<T> {
+  results: T[];
+}
+
 export default function StudentList({ onEdit, onAdd }: StudentListProps) {
   const { user } = useAuth();
   const { t, locale } = useI18n();
@@ -62,7 +66,7 @@ export default function StudentList({ onEdit, onAdd }: StudentListProps) {
       }
 
       if (selectedClass) {
-        params.append('class_assigned', selectedClass);
+        params.append('class_id', selectedClass);
       }
 
       if (activeFilter !== 'all') {
@@ -84,8 +88,8 @@ export default function StudentList({ onEdit, onAdd }: StudentListProps) {
   // Fetch classes for filter
   const fetchClasses = useCallback(async () => {
     try {
-      const response = await api.get<Class[]>('/classes/');
-      setClasses(response);
+      const response = await api.get<Class[] | PaginatedResponse<Class>>('/students/classes/?page_size=200');
+      setClasses(Array.isArray(response) ? response : response.results || []);
     } catch (err) {
       console.error('Error fetching classes:', err);
     }

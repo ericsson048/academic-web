@@ -52,6 +52,7 @@ class AnalyticsSummaryView(APIView):
     Query parameters:
     - class_id: Filter by class (optional)
     - semester_id: Filter by semester (optional)
+    - student_id: Filter by student (optional)
     
     Performance categories:
     - excellent: 16-20
@@ -65,11 +66,14 @@ class AnalyticsSummaryView(APIView):
         # Get filter parameters
         class_id = request.query_params.get('class_id')
         semester_id = request.query_params.get('semester_id')
+        student_id = request.query_params.get('student_id')
         
         # Build base queryset for students
         students_query = Student.objects.filter(is_active=True)
         if class_id:
             students_query = students_query.filter(class_assigned_id=class_id)
+        if student_id and student_id.isdigit():
+            students_query = students_query.filter(id=int(student_id))
         
         total_students = students_query.count()
         
@@ -80,6 +84,8 @@ class AnalyticsSummaryView(APIView):
             indicators_query = indicators_query.filter(student__class_assigned_id=class_id)
         if semester_id:
             indicators_query = indicators_query.filter(semester_id=semester_id)
+        if student_id and student_id.isdigit():
+            indicators_query = indicators_query.filter(student_id=int(student_id))
         
         # Calculate overall average
         avg_result = indicators_query.aggregate(avg=Avg('average'))
@@ -120,6 +126,7 @@ class PerformanceBySubjectView(APIView):
     Query parameters:
     - class_id: Filter by class (optional)
     - semester_id: Filter by semester (optional)
+    - student_id: Filter by student (optional)
     
     Returns list of:
     - subject_id: Subject ID
@@ -134,6 +141,7 @@ class PerformanceBySubjectView(APIView):
         # Get filter parameters
         class_id = request.query_params.get('class_id')
         semester_id = request.query_params.get('semester_id')
+        student_id = request.query_params.get('student_id')
         
         # Build base queryset for performance indicators (subject-specific only)
         indicators_query = PerformanceIndicator.objects.filter(
@@ -144,6 +152,8 @@ class PerformanceBySubjectView(APIView):
             indicators_query = indicators_query.filter(student__class_assigned_id=class_id)
         if semester_id:
             indicators_query = indicators_query.filter(semester_id=semester_id)
+        if student_id and student_id.isdigit():
+            indicators_query = indicators_query.filter(student_id=int(student_id))
         
         # Group by subject and calculate averages
         subject_data = {}
@@ -187,6 +197,7 @@ class PerformanceEvolutionView(APIView):
     Query parameters:
     - class_id: Filter by class (optional)
     - student_id: Filter by specific student (optional)
+    - semester_id: Filter by semester (optional)
     
     Returns list of:
     - semester_id: Semester ID
@@ -200,6 +211,7 @@ class PerformanceEvolutionView(APIView):
         # Get filter parameters
         class_id = request.query_params.get('class_id')
         student_id = request.query_params.get('student_id')
+        semester_id = request.query_params.get('semester_id')
         
         # Build base queryset for performance indicators (overall only)
         indicators_query = PerformanceIndicator.objects.filter(
@@ -210,6 +222,8 @@ class PerformanceEvolutionView(APIView):
             indicators_query = indicators_query.filter(student__class_assigned_id=class_id)
         if student_id:
             indicators_query = indicators_query.filter(student_id=student_id)
+        if semester_id:
+            indicators_query = indicators_query.filter(semester_id=semester_id)
         
         # Group by semester and calculate averages
         semester_data = {}

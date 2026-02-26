@@ -12,6 +12,7 @@ Usage:
 from django.core.management.base import BaseCommand
 from django.db import transaction
 from django.contrib.auth import get_user_model
+from django.db.models.signals import post_save, post_delete
 from students.models import Class, Student, Subject, Semester
 from grades.models import Grade, GradeHistory
 from analytics.models import PerformanceIndicator
@@ -98,52 +99,67 @@ class Command(BaseCommand):
         """Clear all sample data in the correct order to respect foreign keys."""
         deleted_counts = {}
         
-        # Delete in order to respect foreign key constraints
-        # Start with dependent tables first
+        # Temporarily disable signals to prevent errors during bulk deletion
+        from analytics.signals import (
+            trigger_performance_calculation_on_save,
+            trigger_performance_calculation_on_delete
+        )
         
-        self.stdout.write('Deleting performance indicators...')
-        count, _ = PerformanceIndicator.objects.all().delete()
-        deleted_counts['performance_indicators'] = count
-        self.stdout.write(f'  ✓ Deleted {count} performance indicators')
+        post_save.disconnect(trigger_performance_calculation_on_save, sender=Grade)
+        post_delete.disconnect(trigger_performance_calculation_on_delete, sender=Grade)
         
-        self.stdout.write('Deleting grade history...')
-        count, _ = GradeHistory.objects.all().delete()
-        deleted_counts['grade_history'] = count
-        self.stdout.write(f'  ✓ Deleted {count} grade history records')
+        try:
+            # Delete in order to respect foreign key constraints
+            # Start with dependent tables first
+            
+            self.stdout.write('Deleting performance indicators...')
+            count, _ = PerformanceIndicator.objects.all().delete()
+            deleted_counts['performance_indicators'] = count
+            self.stdout.write(f'  ✓ Deleted {count} performance indicators')
+            
+            self.stdout.write('Deleting grade history...')
+            count, _ = GradeHistory.objects.all().delete()
+            deleted_counts['grade_history'] = count
+            self.stdout.write(f'  ✓ Deleted {count} grade history records')
+            
+            self.stdout.write('Deleting grades...')
+            count, _ = Grade.objects.all().delete()
+            deleted_counts['grades'] = count
+            self.stdout.write(f'  ✓ Deleted {count} grades')
+            
+            self.stdout.write('Deleting students...')
+            count, _ = Student.objects.all().delete()
+            deleted_counts['students'] = count
+            self.stdout.write(f'  ✓ Deleted {count} students')
+            
+            self.stdout.write('Deleting semesters...')
+            count, _ = Semester.objects.all().delete()
+            deleted_counts['semesters'] = count
+            self.stdout.write(f'  ✓ Deleted {count} semesters')
+            
+            self.stdout.write('Deleting subjects...')
+            count, _ = Subject.objects.all().delete()
+            deleted_counts['subjects'] = count
+            self.stdout.write(f'  ✓ Deleted {count} subjects')
+            
+            self.stdout.write('Deleting classes...')
+            count, _ = Class.objects.all().delete()
+            deleted_counts['classes'] = count
+            self.stdout.write(f'  ✓ Deleted {count} classes')
+            
+            if not keep_users:
+                self.stdout.write('Deleting users...')
+                count, _ = User.objects.all().delete()
+                deleted_counts['users'] = count
+                self.stdout.write(f'  ✓ Deleted {count} users')
+            else:
+                deleted_counts['users'] = 0
+                self.stdout.write('  ℹ Keeping user accounts (--keep-users flag)')
         
-        self.stdout.write('Deleting grades...')
-        count, _ = Grade.objects.all().delete()
-        deleted_counts['grades'] = count
-        self.stdout.write(f'  ✓ Deleted {count} grades')
-        
-        self.stdout.write('Deleting students...')
-        count, _ = Student.objects.all().delete()
-        deleted_counts['students'] = count
-        self.stdout.write(f'  ✓ Deleted {count} students')
-        
-        self.stdout.write('Deleting semesters...')
-        count, _ = Semester.objects.all().delete()
-        deleted_counts['semesters'] = count
-        self.stdout.write(f'  ✓ Deleted {count} semesters')
-        
-        self.stdout.write('Deleting subjects...')
-        count, _ = Subject.objects.all().delete()
-        deleted_counts['subjects'] = count
-        self.stdout.write(f'  ✓ Deleted {count} subjects')
-        
-        self.stdout.write('Deleting classes...')
-        count, _ = Class.objects.all().delete()
-        deleted_counts['classes'] = count
-        self.stdout.write(f'  ✓ Deleted {count} classes')
-        
-        if not keep_users:
-            self.stdout.write('Deleting users...')
-            count, _ = User.objects.all().delete()
-            deleted_counts['users'] = count
-            self.stdout.write(f'  ✓ Deleted {count} users')
-        else:
-            deleted_counts['users'] = 0
-            self.stdout.write('  ℹ Keeping user accounts (--keep-users flag)')
+        finally:
+            # Re-enable signals
+            post_save.connect(trigger_performance_calculation_on_save, sender=Grade)
+            post_delete.connect(trigger_performance_calculation_on_delete, sender=Grade)
         
         return deleted_counts
     

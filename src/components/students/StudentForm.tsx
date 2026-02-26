@@ -14,6 +14,10 @@ interface FormErrors {
   [key: string]: string;
 }
 
+interface PaginatedResponse<T> {
+  results: T[];
+}
+
 export default function StudentForm({ student, onSuccess, onCancel }: StudentFormProps) {
   const { t } = useI18n();
   const isEdit = !!student;
@@ -40,8 +44,8 @@ export default function StudentForm({ student, onSuccess, onCancel }: StudentFor
   useEffect(() => {
     const fetchClasses = async () => {
       try {
-        const response = await api.get<Class[]>('/classes/');
-        setClasses(response);
+        const response = await api.get<Class[] | PaginatedResponse<Class>>('/students/classes/?page_size=200');
+        setClasses(Array.isArray(response) ? response : response.results || []);
       } catch (err) {
         console.error('Error fetching classes:', err);
       }

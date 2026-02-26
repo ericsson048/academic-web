@@ -464,7 +464,7 @@ This implementation plan breaks down the APAS system into discrete, incremental 
     - **Property 22: Data Integrity Error Handling**
     - **Validates: Requirements 8.6**
 
-- [-] 19. Sample data generation
+- [x] 19. Sample data generation
   - [x] 19.1 Create data seeding management command
     - Create Django management command seed_data
     - Generate 3 classes with 20-30 students each
@@ -480,7 +480,7 @@ This implementation plan breaks down the APAS system into discrete, incremental 
     - Provide confirmation prompt
     - _Requirements: 13.6_
 
-  - [-] 19.3 Optimize seeding performance
+  - [x] 19.3 Optimize seeding performance
     - Use bulk_create for efficient data insertion
     - Ensure seeding completes within 30 seconds
     - Display progress during seeding

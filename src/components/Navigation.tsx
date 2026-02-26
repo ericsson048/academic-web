@@ -1,7 +1,7 @@
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useI18n } from '../context/I18nContext';
-import { LayoutDashboard, Users, FileText, BarChart3, LogOut } from 'lucide-react';
+import { LayoutDashboard, Users, FileText, BarChart3, LogOut, School, CalendarRange } from 'lucide-react';
 
 export default function Navigation() {
   const { user, logout } = useAuth();
@@ -20,6 +20,18 @@ export default function Navigation() {
         icon: Users, 
         label: t('layout.nav.students'), 
         path: '/students',
+        roles: ['admin', 'teacher'] 
+      },
+      { 
+        icon: School, 
+        label: t('layout.nav.classes'), 
+        path: '/classes',
+        roles: ['admin', 'teacher'] 
+      },
+      { 
+        icon: CalendarRange, 
+        label: t('layout.nav.semesters'), 
+        path: '/semesters',
         roles: ['admin', 'teacher'] 
       },
       { 

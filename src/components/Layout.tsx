@@ -10,6 +10,8 @@ export default function Layout() {
   const pageTitles: Record<string, string> = {
     '/': t('layout.nav.dashboard'),
     '/students': t('layout.nav.students'),
+    '/classes': t('layout.nav.classes'),
+    '/semesters': t('layout.nav.semesters'),
     '/grades': t('layout.nav.grades'),
     '/reports': t('layout.nav.reports'),
     '/docs': t('layout.nav.documentation'),
